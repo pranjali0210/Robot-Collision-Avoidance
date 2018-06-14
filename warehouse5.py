@@ -7,10 +7,6 @@ WIDTH=1000
 ROW_COUNT=10
 COLUMN_COUNT=10
 SIZE=100
-EXIT_POINTS=[[1,5],[10,5]]
-OBSTACLES=[[2,2],[7,2],[2,7],[7,7]]
-JUNCTIONS=[5,5]
-r1=[]
 root = Tk()
 canvas = Canvas(root, bg="white", height=HEIGHT, width=WIDTH)
 root.title("Decentralized Robot Collision Avoidance")
