@@ -1,3 +1,4 @@
+
 from tkinter import *
 import time
 import networkx as nx
@@ -18,7 +19,8 @@ canvas = Canvas(root, bg="white", height=HEIGHT, width=WIDTH)
 root.title("Decentralized Robot Collision Avoidance")
 canvas.pack()
 
-
+""" This function draws the warehouse grid based on the input given 
+for number of obstacles row-wise and column-wise"""
 def draw_grid():
     row=[]
     column=[]
@@ -32,7 +34,10 @@ def set_exit_points(i,j):
 
 def set_obstacles(x,y):
     a=canvas.create_rectangle(SIZE*(y),SIZE*(x),SIZE*(y+1),SIZE*(x+1),fill='brown')
-
+    
+    
+""" This code snippet forms a matrix according to the route.txt file which has the indicators for each cell 
+of the matrix"""
 matrix=[[0]*c for i in range(r)]
 f=open('route.txt','r')
 while(1):
@@ -59,18 +64,18 @@ while(1):
              x=4
              i=int(s[0])
              j=int(s[2])
-    if s[x]=='L'and len(s)<=8:
+    if s[x]=='L'and len(s)<=8:    #All cells having left direction
         val=4
-    if s[x]=='R'and len(s)<=8:
+    if s[x]=='R'and len(s)<=8:     #For right direction 
         val=8
-    if s[x]=='U'and len(s)<=8:
+    if s[x]=='U'and len(s)<=8:     #For up direction
         val=1
-    if s[x]=='D'and len(s)<=8:
+    if s[x]=='D'and len(s)<=8:     #For down direction
         val=2
-    if s[x]=='O'and len(s)<=8:
+    if s[x]=='O'and len(s)<=8:      #For obstacles
         flag=-1
-        val=-1
-    if s[x]=='B'and len(s)<=8:
+        val=-1 
+    if s[x]=='B'and len(s)<=8:      #For boundary cells
         flag=-1
         val=-2
     if s[x]=='L' and s[x+1]=='U':
@@ -82,23 +87,25 @@ while(1):
     if s[x]=='R' and s[x+1]=='D':
         val=10
     matrix[i][j]=val
+    #Making a list of all cells having valid moving directions
     if flag==0:
         x=[i,j]
         valid.append(x)
 
 
 f.close()
-
+"""This code snippet draws up the entire warehouse with exit points and obstacles"""
 draw_grid()
-
-
 for i in range(r):
     for j in range(c):
         if matrix[i][j]==-2:
             set_exit_points(i,j)
         if matrix[i][j]==-1:
             set_obstacles(i,j)
-
+         
+        
+"""To find the shortest path between source and destination cells
+using the networkx library"""
 def shortest_path(source,target):
     G=nx.DiGraph()
     G.add_nodes_from([1,r*c])
@@ -136,7 +143,7 @@ def shortest_path(source,target):
        i=i+1
     nx.draw(G)
     print(path)
-    #plt.show()
+    #plt.show()      #can be uncommented to see the graphs
     return path
 
 class Robot():
@@ -156,7 +163,7 @@ class Robot():
         self.color=color
 
 
-
+"""This function takes in the a dataframe of all robot objects and their positions"""
 def log(df):
     t=0
     flag=-1
@@ -164,10 +171,14 @@ def log(df):
      dict={}
      for i in df.index:
         for j in df.index:
+            #First check is wheather the next position for a robot in vacant or not
+            #If not,then it has to wait
             if j!=i and df.loc[i,'decision']!='X':
               if df.loc[i,'next']==df.loc[j,'current']:
                  df.loc[i,'decision']='W'
                  break
+              #To check if there is a situation of collision
+              #If there is,all the robots in such a situation are taken together and their decesion is A
               elif df.loc[i,'next']==df.loc[j,'next']:
                    x=df.loc[i,'next']
                    x=tuple(x)
@@ -184,8 +195,6 @@ def log(df):
         if df.loc[i,'decision']=='M':
             i.pos=i.pos+1
             move_robot(i,df)
-            print(len(df.loc[i,'next']))
-            print(len(df.loc[i,'current']))
             y=df.at[i,'next']
             df.at[i,'current']=y
             if i.pos<len(i.path):
