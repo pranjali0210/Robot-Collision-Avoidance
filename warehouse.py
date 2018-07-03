@@ -194,7 +194,7 @@ def log(df):
      for i in df.index:
         if df.loc[i,'decision']=='M':
             i.pos=i.pos+1
-            move_robot(i,df)
+            move_robot(i,df)    #For all robots having to obstruction in the path
             y=df.at[i,'next']
             df.at[i,'current']=y
             if i.pos<len(i.path):
@@ -207,7 +207,7 @@ def log(df):
                df.drop(i,inplace=True)
                print(df)
         elif df.loc[i,'decision']=='A':
-             auction(dict,df)
+             auction(dict,df)      #For all robots facing collision situation
 
      if df.empty:
          print('finished')
@@ -261,14 +261,14 @@ def auction(dict,df):
             else:
                 df.loc[x,'decision']='W'
 
-num=input("Enter number of robots: ")
+num=input("Enter number of robots: ")     #Taking no. of robots as user input
 num=int(num)
 category=['premium','regular','economy']
 color=['blue','green','black','green','purple','yellow','grey','cyan']
 for i in range(1,num+1):
-    a=random.choice(valid)
+    a=random.choice(valid)   #Taking random source and destination cells
     u=random.choice(valid)
-    v=random.choice(category)
+    v=random.choice(category)   #Random category 
     t=random.choice(color)
     print("source:",a)
     print("destination:",u)
@@ -284,7 +284,8 @@ for x in robot:
     id.append(x.id)
 
 data={'id':id,'current':current,'next':next}
+#creating an dataframe with the initial parameters of the robots
 df=pd.DataFrame(data,columns=['id','current','next','decision'],index=robot)
 print(df)
-df=log(df)
+df=log(df)   #The main function for robot movements
 root.mainloop()
