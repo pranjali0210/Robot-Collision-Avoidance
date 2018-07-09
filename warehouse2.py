@@ -172,35 +172,38 @@ def log(df):
     while(1):
      dict={}
      un={}
+     k=[]
      for i in df.index:
         un[i]=[]
+        flag=0
         for j in df.index:
             if j!=i and df.loc[i,'current']==df.loc[j,'next']:
                 un[i].append(j)
-        l=len(un[i])
-        un[i].insert(0,l)
-     un=sorted(un.items(), key=lambda e: e[1][0])
+            if j!=i and df.loc[j,'current']==df.loc[i,'next']:
+                flag=1
+        if flag==0:
+            k.append(i)
      '''generate bfs from dictionary'''
-     bfs_connected_component(un,list(un.keys)[0])
-     '''assigning decision'''
-     for i in bfs:
-        flag1=0
-        flag2=0
-        flag4=0
-        for j in bfs:
-            if j!=i and df.loc[i,'decision']!='X':
-              if df.loc[i,'next']==df.loc[j,'current']:
+     for i in k:
+        bfs=bfs_connected_component(un,i)
+        for i in bfs:
+          flag1=0
+          flag2=0
+          flag4=0
+          for j in bfs:
+              if j!=i and df.loc[i,'decision']!='X':
+                if df.loc[i,'next']==df.loc[j,'current']:
                   
-                      if (df.loc[j,'decision']=='A')or(df.loc[j,'decision']=='W'):
-                          df.loc[i,'decision']='W'
-                          flag2=1
-                          break
-                      elif df.loc[j,'decision']=='N':
-                          df.loc[i,'decision']='N'
-                          flag4=1
-              elif df.loc[i,'next']==df.loc[j,'next']:
+                        if (df.loc[j,'decision']=='A')or(df.loc[j,'decision']=='W'):
+                            df.loc[i,'decision']='W'
+                            flag2=1
+                            break
+                        elif df.loc[j,'decision']=='N':
+                            df.loc[i,'decision']='N'
+                            flag4=1
+                elif df.loc[i,'next']==df.loc[j,'next']:
                    flag1=1
-        if flag1==1 and flag2==0 and flag4==0:
+          if flag1==1 and flag2==0 and flag4==0:
                    x=df.loc[i,'next']
                    messagebox.showinfo("Title","Auction")
                    x=tuple(x)
@@ -209,9 +212,9 @@ def log(df):
                    dict[x].append(i)
                    dict[x].append(j)
                    df.loc[i,'decision']='A'
-        if flag2==0 and flag4==0 and flag1==0:
+          if flag2==0 and flag4==0 and flag1==0:
             df.loc[i,'decision']='M'
-        if flag4==1:
+          if flag4==1:
             messagebox.showinfo("title","oh no!")
      
      for i in df.index:
