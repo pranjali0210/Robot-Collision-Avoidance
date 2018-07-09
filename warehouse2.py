@@ -282,6 +282,7 @@ def auction(dict,df):
                 print('highest:',maxi,x)
                 print('second highest:',second_max)
                 df.loc[x,'decision']='M'
+                move_robot(x,df)
                 print("the robot has id",x)
                 print("It's category is:",x.category)
                 print("it has paid ",second_max)
