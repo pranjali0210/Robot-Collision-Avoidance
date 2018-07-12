@@ -328,6 +328,61 @@ def auction(dict,df):
                 print("the robot has id",x)
                 print("It's category is:",x.category)
                 print("it has paid ",second_max)
+                k=df.loc[x,'next']
+                s=0
+                if matrix[k[0]][k[1]]==5:
+                   p=[k[0],k[1]+1]
+                   q=[k[0]-1,k[1]]
+                   r=[k[0]-1,k[1]+1]
+                   for j in df.index:
+                        if j!=x:
+                            if df.loc[j,'current']==p:
+                                s=s+1
+                            elif df.loc[j,'current']==q:
+                                s=s+1
+                            elif df.loc[j,'current']==r:
+                                s=s+1
+                elif matrix[k[0]][k[1]]==6:
+                    p=[k[0],k[1]-1]
+                    q=[k[0]-1,k[1]]
+                    r=[k[0]-1,k[1]-1]
+                    for j in df.index:
+                        if j!=i:
+                            if df.loc[j,'current']==p:
+                                        s=s+1
+                            elif df.loc[j,'current']==q:
+                                        s=s+1
+                            elif df.loc[j,'current']==r:
+                                        s=s+1
+                elif matrix[k[0]][k[1]]==9:
+                    p=[k[0],k[1]-1]
+                    q=[k[0]+1,k[1]]
+                    r=[k[0]+1,k[1]-1]
+                    for j in df.index:
+                        if j!=i:
+                            if df.loc[j,'current']==p:
+                                        s=s+1
+                            elif df.loc[j,'current']==q:
+                                        s=s+1
+                            elif df.loc[j,'current']==r:
+                                        s=s+1
+                elif matrix[k[0]][k[1]]==10:
+                            p=[k[0],k[1]+1]
+                            q=[k[0]+1,k[1]]
+                            r=[k[0]+1,k[1]+1]
+                            for j in df.index:
+                                if j!=i:
+                                    if df.loc[j,'current']==p:
+                                        s=s+1
+                                    elif df.loc[j,'current']==q:
+                                        s=s+1
+                                    elif df.loc[j,'current']==r:
+                                        s=s+1
+                if s==3:
+                    df.loc[x,'decision']="W"
+                    for x in a:
+                        df.loc[x,'decision']="W"
+                    break
                 x.pos=x.pos+1
                 move_robot(x,df)
                 y=df.at[x,'next']
@@ -342,20 +397,20 @@ def auction(dict,df):
             else:
                 df.loc[x,'decision']='W'
                 x.f=1
-for i in num:
+for s in num:
  d=3
- time_comp[num]=[]
- time_move[num]=[]
+ time_comp[s]=[]
+ time_move[s]=[]
  category=['premium','regular','economy']
  while(d>0):
   robot=[]
   timec=0
   timem=0
-  sample1=random.sample(valid,num)
-  sample2=random.sample(valid,num)
+  sample1=random.sample(valid,s)
+  sample2=random.sample(valid,s)
   print("sample 1 ",sample1)
   print("sample 2 ",sample2)
-  for i in range(0,num):
+  for i in range(0,s):
     a=sample1[i]
     u=sample2[i]
     v=random.choice(category)
@@ -387,26 +442,24 @@ for i in num:
   timec=timec-timem
   print("timec ",timec)
   print("timem ",timem)
-  time_comp[num].append(timec)
-  time_move[num].append(timem)
+  time_comp[s].append(timec)
+  time_move[s].append(timem)
   d=d-1
-print(time_comp)
-print(time_move)
-f=open('plots1.txt','a')
-x=time_comp[num]
-y=time_move[num]
-x=np.array(x)
-y=np.array(y)
-f.write("Grid size(column): %d\n"%m)
-f.write("Grid size(row):%d\n"%n)
-f.write("No. of robots: %d\n" %num)
-f.write("Computation time:\n")
+ print(time_comp)
+ print(time_move)
+ f=open('plots1.txt','a')
+ f.write("Second price auction\n")
+ x=time_comp[s]
+ y=time_move[s]
+ x=np.array(x)
+ y=np.array(y)
+#f.write("Grid size: %dX%d"%num)
+ f.write("No. of robots: %d\n" %s)
+ f.write("Computation time:\n")
 #for i in x:
-f.write("%.15f\n"%np.mean(x))
-f.write("standard devaiation %.15f\n"%np.std(x))
-f.write("Movement time:\n")
+ f.write("%.15f\n"%np.mean(x))
+ f.write("Movement time:\n")
 #for i in y:
-f.write("%.18f\n"%np.mean(y))
-f.write("standard devaiation %.18f\n"%np.std(y))
-f.close()
+ f.write("%.18f\n"%np.mean(y))
+ f.close()
  #root.mainloop()
