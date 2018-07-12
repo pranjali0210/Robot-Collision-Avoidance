@@ -397,7 +397,8 @@ x=time_comp[num]
 y=time_move[num]
 x=np.array(x)
 y=np.array(y)
-#f.write("Grid size: %dX%d"%num)
+f.write("Grid size(column): %d\n"%m)
+f.write("Grid size(row):%d\n"%n)
 f.write("No. of robots: %d\n" %num)
 f.write("Computation time:\n")
 #for i in x:
