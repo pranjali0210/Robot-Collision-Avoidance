@@ -226,7 +226,7 @@ def log(df):
                             s=s+1
                         elif df.loc[j,'current']==r:
                             s=s+1
-            elif matrix[k[0]][k[1]]==9:
+            elif matrix[k[0]][k[1]]==10:
                 p=[k[0],k[1]-1]
                 q=[k[0]+1,k[1]]
                 r=[k[0]+1,k[1]-1]
@@ -238,7 +238,7 @@ def log(df):
                             s=s+1
                         elif df.loc[j,'current']==r:
                             s=s+1
-            elif matrix[k[0]][k[1]]==10:
+            elif matrix[k[0]][k[1]]==9:
                 p=[k[0],k[1]+1]
                 q=[k[0]+1,k[1]]
                 r=[k[0]+1,k[1]+1]
@@ -300,25 +300,101 @@ def auction(dict,df):
     #messagebox.showinfo("Title","Auction occured")
     maxi=0
     second_max=0
-    k=dict.keys()
-    for i in k:
-        a=list(set(dict[i]))
-        bid=[]
-        for x in a:
-            if x.category=='regular':
+    kx=dict.keys()
+    for i in kx:  
+                k=i
+                l=list(set(dict[i]))
+                s=0
+                if matrix[k[0]][k[1]]==5:
+                   p=[k[0],k[1]+1]
+                   q=[k[0]-1,k[1]]
+                   r=[k[0]-1,k[1]+1]
+                   for j in df.index:
+                            if df.loc[j,'current']==p:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==q:
+                                 if j in l:
+                                   x=j
+                                 s=s+1
+                            elif df.loc[j,'current']==r:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                elif matrix[k[0]][k[1]]==6:
+                    p=[k[0],k[1]-1]
+                    q=[k[0]-1,k[1]]
+                    r=[k[0]-1,k[1]-1]
+                    for j in df.index:
+                            if df.loc[j,'current']==p:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==q:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==r:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                elif matrix[k[0]][k[1]]==10:
+                    p=[k[0],k[1]-1]
+                    q=[k[0]+1,k[1]]
+                    r=[k[0]+1,k[1]-1]
+                    for j in df.index:
+                            if df.loc[j,'current']==p:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==q:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==r:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                elif matrix[k[0]][k[1]]==9:
+                            p=[k[0],k[1]+1]
+                            q=[k[0]+1,k[1]]
+                            r=[k[0]+1,k[1]+1]
+                            for j in df.index:
+                                    if df.loc[j,'current']==p:
+                                        if j in l:
+                                           x=j
+                                        s=s+1
+                                    elif df.loc[j,'current']==q:
+                                        if j in l:
+                                           x=j
+                                        s=s+1
+                                    elif df.loc[j,'current']==r:
+                                        if j in l:
+                                           x=j
+                                        s=s+1
+                if s==3:
+                    df.loc[x,'decision']="M"
+                    for j in l:
+                        if j!=x:
+                           df.loc[j,'decision']="W"
+                    return
+    a=list(set(dict[i]))
+    bid=[]
+    for x in a:
+        if x.category=='regular':
                x.bid=random.gauss(0.5,0.083)
-            elif x.category=='premium':
+        elif x.category=='premium':
                x.bid=random.gauss(0.75,0.083)
-            else:
+        else:
                 x.bid=random.gauss(0.25,0.083)
-
-            bid.append(x.bid)
-        print(bid)
-        maxi=max(bid)
-        bid.remove(maxi)
-        second_max=max(bid)
-        auc={}
-        for x in a:
+        bid.append(x.bid)
+    print(bid)
+    maxi=max(bid)
+    bid.remove(maxi)
+    second_max=max(bid)
+    for x in a:
+            
             if x.bid==maxi:
                 max_index=x
                 print('highest:',maxi,x)
@@ -328,61 +404,7 @@ def auction(dict,df):
                 print("the robot has id",x)
                 print("It's category is:",x.category)
                 print("it has paid ",second_max)
-                k=df.loc[x,'next']
-                s=0
-                if matrix[k[0]][k[1]]==5:
-                   p=[k[0],k[1]+1]
-                   q=[k[0]-1,k[1]]
-                   r=[k[0]-1,k[1]+1]
-                   for j in df.index:
-                        if j!=x:
-                            if df.loc[j,'current']==p:
-                                s=s+1
-                            elif df.loc[j,'current']==q:
-                                s=s+1
-                            elif df.loc[j,'current']==r:
-                                s=s+1
-                elif matrix[k[0]][k[1]]==6:
-                    p=[k[0],k[1]-1]
-                    q=[k[0]-1,k[1]]
-                    r=[k[0]-1,k[1]-1]
-                    for j in df.index:
-                        if j!=x:
-                            if df.loc[j,'current']==p:
-                                        s=s+1
-                            elif df.loc[j,'current']==q:
-                                        s=s+1
-                            elif df.loc[j,'current']==r:
-                                        s=s+1
-                elif matrix[k[0]][k[1]]==9:
-                    p=[k[0],k[1]-1]
-                    q=[k[0]+1,k[1]]
-                    r=[k[0]+1,k[1]-1]
-                    for j in df.index:
-                        if j!=x:
-                            if df.loc[j,'current']==p:
-                                        s=s+1
-                            elif df.loc[j,'current']==q:
-                                        s=s+1
-                            elif df.loc[j,'current']==r:
-                                        s=s+1
-                elif matrix[k[0]][k[1]]==10:
-                            p=[k[0],k[1]+1]
-                            q=[k[0]+1,k[1]]
-                            r=[k[0]+1,k[1]+1]
-                            for j in df.index:
-                                if j!=x:
-                                    if df.loc[j,'current']==p:
-                                        s=s+1
-                                    elif df.loc[j,'current']==q:
-                                        s=s+1
-                                    elif df.loc[j,'current']==r:
-                                        s=s+1
-                if s==3:
-                    df.loc[x,'decision']="W"
-                    for x in a:
-                        df.loc[x,'decision']="W"
-                    return
+             
                 x.pos=x.pos+1
                 move_robot(x,df)
                 y=df.at[x,'next']
@@ -398,7 +420,7 @@ def auction(dict,df):
                 df.loc[x,'decision']='W'
                 x.f=1
 for s in num:
- d=3
+ d=10
  time_comp[s]=[]
  time_move[s]=[]
  category=['premium','regular','economy']
