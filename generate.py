@@ -3,8 +3,8 @@ m=input("Enter m")
 m=int(m)
 n=input("Enter n")
 n=int(n)
-num=input("Enter number of robots: ")
-num=int(num)
+#num=input("Enter number of robots: ")
+num=[5,10,15,20,25,30]
 r=5*n
 c=5*m
 arr=np.empty((r,c), dtype='object')
