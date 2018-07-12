@@ -347,7 +347,7 @@ def auction(dict,df):
                     q=[k[0]-1,k[1]]
                     r=[k[0]-1,k[1]-1]
                     for j in df.index:
-                        if j!=i:
+                        if j!=x:
                             if df.loc[j,'current']==p:
                                         s=s+1
                             elif df.loc[j,'current']==q:
@@ -359,7 +359,7 @@ def auction(dict,df):
                     q=[k[0]+1,k[1]]
                     r=[k[0]+1,k[1]-1]
                     for j in df.index:
-                        if j!=i:
+                        if j!=x:
                             if df.loc[j,'current']==p:
                                         s=s+1
                             elif df.loc[j,'current']==q:
@@ -371,7 +371,7 @@ def auction(dict,df):
                             q=[k[0]+1,k[1]]
                             r=[k[0]+1,k[1]+1]
                             for j in df.index:
-                                if j!=i:
+                                if j!=x:
                                     if df.loc[j,'current']==p:
                                         s=s+1
                                     elif df.loc[j,'current']==q:
@@ -382,7 +382,7 @@ def auction(dict,df):
                     df.loc[x,'decision']="W"
                     for x in a:
                         df.loc[x,'decision']="W"
-                    break
+                    return
                 x.pos=x.pos+1
                 move_robot(x,df)
                 y=df.at[x,'next']
