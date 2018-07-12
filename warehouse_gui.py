@@ -403,8 +403,10 @@ f.write("No. of robots: %d\n" %num)
 f.write("Computation time:\n")
 #for i in x:
 f.write("%.15f\n"%np.mean(x))
+f.write("standard devaiation %.15f\n"%np.std(x))
 f.write("Movement time:\n")
 #for i in y:
 f.write("%.18f\n"%np.mean(y))
+f.write("standard devaiation %.18f\n"%np.std(y))
 f.close()
  #root.mainloop()
