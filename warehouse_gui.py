@@ -1,5 +1,5 @@
-#from tkinter import *
-#from tkinter import messagebox
+from tkinter import *
+from tkinter import messagebox
 import time
 import numpy as np
 import networkx as nx
@@ -22,10 +22,10 @@ timem=0
 time_comp={}
 time_move={}
 pos=1
-#root = Tk()
-#canvas = Canvas(root, bg="AntiqueWhite1", height=HEIGHT, width=WIDTH)
-#root.title("Decentralized Robot Collision Avoidance")
-#canvas.pack()
+root = Tk()
+canvas = Canvas(root, bg="AntiqueWhite1", height=HEIGHT, width=WIDTH)
+root.title("Decentralized Robot Collision Avoidance")
+canvas.pack()
 
 
 def draw_grid():
@@ -98,15 +98,15 @@ while(1):
 
 f.close()
 
-#draw_grid()
+draw_grid()
 
 
-#for i in range(r):
- #   for j in range(c):
-        #if matrix[i][j]==-2:
-            #set_exit_points(i,j)
-        #if matrix[i][j]==-1:
-            #set_obstacles(i,j)
+for i in range(r):
+    for j in range(c):
+        if matrix[i][j]==-2:
+            set_exit_points(i,j)
+        if matrix[i][j]==-1:
+            set_obstacles(i,j)
 
 def shortest_path(source,target):
     G=nx.DiGraph()
@@ -162,7 +162,7 @@ class Robot():
 
     def create_robot(self,color):
         global timec
-        #self.id=canvas.create_rectangle(SIZE*(self.source[1]),SIZE*(self.source[0]),SIZE*(self.source[1]+1),SIZE*(self.source[0]+1),fill=color)
+        self.id=canvas.create_rectangle(SIZE*(self.source[1]),SIZE*(self.source[0]),SIZE*(self.source[1]+1),SIZE*(self.source[0]+1),fill=color)
         start=time.time()
         self.path=shortest_path(self.source,self.target)
         end=time.time()
@@ -256,7 +256,7 @@ def log(df):
                 df.loc[i,'decision']="W"
                 break
             i.pos=i.pos+1
-            #move_robot(i,df)
+            move_robot(i,df)
             y=df.at[i,'next']
             df.at[i,'current']=y
             if i.pos<len(i.path):
@@ -266,15 +266,15 @@ def log(df):
                df.loc[i,'decision']="X"
                print("destination reached of ",i.id)
                df.drop(i,inplace=True)
-               #canvas.delete(i.id)
+               canvas.delete(i.id)
                print(df)
         elif df.loc[i,'decision']=='A':
              auction(dict,df)
         elif df.loc[i,'decision']=="X":
              df.drop(i,inplace=True)
-             #canvas.delete(i.id)
-     #canvas.update()
-     #time.sleep(0.5)
+             canvas.delete(i.id)
+     canvas.update()
+     time.sleep(0.5)
      end=time.time()
      diff=end-start
      timem=timem+diff
@@ -407,7 +407,7 @@ def auction(dict,df):
                   print("It's category is:",x.category)
                   print("it has paid ",second_max)
                   x.pos=x.pos+1
-                  #move_robot(x,df)
+                  move_robot(x,df)
                   y=df.at[x,'next']
                   df.at[x,'current']=y
                   if x.pos<len(x.path):
