@@ -301,7 +301,6 @@ def move_robot(x,df):
     timem=timem+diff
 
 def auction(dict,df):
-    #messagebox.showinfo("Title","Auction occured")
     maxi=0
     second_max=0
     kx=dict.keys()
@@ -382,49 +381,46 @@ def auction(dict,df):
                     for j in l:
                         if j!=x:
                            df.loc[j,'decision']="W"
-                    return
-    a=list(set(dict[i]))
-    bid=[]
-    for x in a:
-        if x.category=='regular':
-               x.bid=random.gauss(0.5,0.083)
-        elif x.category=='premium':
-               x.bid=random.gauss(0.75,0.083)
-        else:
-                x.bid=random.gauss(0.25,0.083)
-        bid.append(x.bid)
-    print(bid)
-    maxi=max(bid)
-    bid.remove(maxi)
-    second_max=max(bid)
-    for x in a:
-            
-            if x.bid==maxi:
-                max_index=x
-                print('highest:',maxi,x)
-                print('second highest:',second_max)
-                df.loc[x,'decision']='M'
-                x.f=1
-                print("the robot has id",x)
-                print("It's category is:",x.category)
-                print("it has paid ",second_max)
-             
-                x.pos=x.pos+1
-                #move_robot(x,df)
-                y=df.at[x,'next']
-                df.at[x,'current']=y
-                if x.pos<len(x.path):
-                   df.at[x,'next']=x.path[x.pos]
-                elif x.pos>=len(x.path):
-                   df.loc[x,'decision']="X"
-                   print("destination reached of ",x.id)
+                    continue
+                a=list(set(dict[i]))
+                bid=[]
+                for x in a:
+                     if x.category=='regular':
+                        x.bid=random.gauss(0.5,0.083)
+                     elif x.category=='premium':
+                        x.bid=random.gauss(0.75,0.083)
+                     else:
+                         x.bid=random.gauss(0.25,0.083)
+                     bid.append(x.bid)
+                print(bid)
+                maxi=max(bid)
+                bid.remove(maxi)
+                second_max=max(bid)
+                for x in a:
+                 if x.bid==maxi:
+                  max_index=x
+                  print('highest:',maxi,x)
+                  print('second highest:',second_max)
+                  df.loc[x,'decision']='M'
+                  x.f=1
+                  print("the robot has id",x)
+                  print("It's category is:",x.category)
+                  print("it has paid ",second_max)
+                  x.pos=x.pos+1
+                  #move_robot(x,df)
+                  y=df.at[x,'next']
+                  df.at[x,'current']=y
+                  if x.pos<len(x.path):
+                    df.at[x,'next']=x.path[x.pos]
+                  elif x.pos>=len(x.path):
+                    df.loc[x,'decision']="X"
+                    print("destination reached of ",x.id)
                    #df.drop(x,inplace=True)
-
-            else:
-                df.loc[x,'decision']='W'
-                x.f=1
+                 else:
+                  df.loc[x,'decision']='W'
+                  x.f=1
 for s in num:
- d=10
+ d=100
  time_comp[s]=[]
  time_move[s]=[]
  category=['premium','regular','economy']
