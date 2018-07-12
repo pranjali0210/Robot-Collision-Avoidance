@@ -393,7 +393,6 @@ while(d>0):
 print(time_comp)
 print(time_move)
 f=open('plots1.txt','a')
-f.write("Second price auction\n")
 x=time_comp[num]
 y=time_move[num]
 x=np.array(x)
