@@ -6,7 +6,7 @@ import networkx as nx
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
-from colors import color
+#from colors import color
 from generate import r,c,num
 #from plots import tc,tm
 import sys
