@@ -342,20 +342,20 @@ def auction(dict,df):
             else:
                 df.loc[x,'decision']='W'
                 x.f=1
-
-d=3
-time_comp[num]=[]
-time_move[num]=[]
-category=['premium','regular','economy']
-while(d>0):
- robot=[]
- timec=0
- timem=0
- sample1=random.sample(valid,num)
- sample2=random.sample(valid,num)
- print("sample 1 ",sample1)
- print("sample 2 ",sample2)
- for i in range(0,num):
+for i in num:
+ d=3
+ time_comp[num]=[]
+ time_move[num]=[]
+ category=['premium','regular','economy']
+ while(d>0):
+  robot=[]
+  timec=0
+  timem=0
+  sample1=random.sample(valid,num)
+  sample2=random.sample(valid,num)
+  print("sample 1 ",sample1)
+  print("sample 2 ",sample2)
+  for i in range(0,num):
     a=sample1[i]
     u=sample2[i]
     v=random.choice(category)
@@ -365,10 +365,10 @@ while(d>0):
     r1=Robot(v,a,u)
     robot.append(r1)
     r1.create_robot(t)
- current=[]
- next=[]
- id=[]
- for x in robot:
+  current=[]
+  next=[]
+  id=[]
+  for x in robot:
     current.append(x.path[0])
     if len(x.path)>1:
        next.append(x.path[1])
@@ -376,20 +376,20 @@ while(d>0):
        x.pos=0
        next.append(x.path[0])
     id.append(x.id)
- data={'id':id,'current':current,'next':next}
- df=pd.DataFrame(data,columns=['id','current','next','decision'],index=robot)
- print(df)
- start=time.time()
- df=log(df)
- end=time.time()
- diff=end-start
- timec=timec+diff
- timec=timec-timem
- print("timec ",timec)
- print("timem ",timem)
- time_comp[num].append(timec)
- time_move[num].append(timem)
- d=d-1
+  data={'id':id,'current':current,'next':next}
+  df=pd.DataFrame(data,columns=['id','current','next','decision'],index=robot)
+  print(df)
+  start=time.time()
+  df=log(df)
+  end=time.time()
+  diff=end-start
+  timec=timec+diff
+  timec=timec-timem
+  print("timec ",timec)
+  print("timem ",timem)
+  time_comp[num].append(timec)
+  time_move[num].append(timem)
+  d=d-1
 print(time_comp)
 print(time_move)
 f=open('plots1.txt','a')
