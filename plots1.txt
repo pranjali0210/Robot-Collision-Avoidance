@@ -1,0 +1,33 @@
+
+Second price auction
+No. of robots: 15
+Computation time:
+13.988919711112976
+1.091965022145193
+Movement time:
+0.199862217903137213
+0.024172688924672552
+Second price auction
+No. of robots: 5
+Computation time:
+3.482452054023743
+0.618089703790746
+Movement time:
+0.111613595485687250
+0.020836568923239533
+Second price auction
+No. of robots: 5
+Computation time:
+4.326239018440247
+1.092999673540701
+Movement time:
+0.136720004081726076
+0.032652375737583152
+Second price auction
+No. of robots: 10
+Computation time:
+8.779651396274566
+2.498115710862726
+Movement time:
+0.175176756381988513
+0.056717259213542946
