@@ -1,5 +1,5 @@
-from tkinter import *
-from tkinter import messagebox
+#from tkinter import *
+#from tkinter import messagebox
 import time
 import numpy as np
 import networkx as nx
@@ -10,7 +10,7 @@ from colors import color
 from generate import r,c,num
 #from plots import tc,tm
 import sys
-sys.stdout = open('output.txt','wt')
+#sys.stdout = open('output.txt','wt')
 SIZE=50
 HEIGHT=r*SIZE
 WIDTH=c*SIZE
@@ -22,10 +22,10 @@ timem=0
 time_comp={}
 time_move={}
 pos=1
-root = Tk()
-canvas = Canvas(root, bg="AntiqueWhite1", height=HEIGHT, width=WIDTH)
-root.title("Decentralized Robot Collision Avoidance")
-canvas.pack()
+#root = Tk()
+#canvas = Canvas(root, bg="AntiqueWhite1", height=HEIGHT, width=WIDTH)
+#root.title("Decentralized Robot Collision Avoidance")
+#canvas.pack()
 
 
 def draw_grid():
@@ -98,15 +98,15 @@ while(1):
 
 f.close()
 
-draw_grid()
+#draw_grid()
 
 
-for i in range(r):
-    for j in range(c):
-        if matrix[i][j]==-2:
-            set_exit_points(i,j)
-        if matrix[i][j]==-1:
-            set_obstacles(i,j)
+#for i in range(r):
+ #   for j in range(c):
+        #if matrix[i][j]==-2:
+            #set_exit_points(i,j)
+        #if matrix[i][j]==-1:
+            #set_obstacles(i,j)
 
 def shortest_path(source,target):
     G=nx.DiGraph()
@@ -162,7 +162,7 @@ class Robot():
 
     def create_robot(self,color):
         global timec
-        self.id=canvas.create_rectangle(SIZE*(self.source[1]),SIZE*(self.source[0]),SIZE*(self.source[1]+1),SIZE*(self.source[0]+1),fill=color)
+        #self.id=canvas.create_rectangle(SIZE*(self.source[1]),SIZE*(self.source[0]),SIZE*(self.source[1]+1),SIZE*(self.source[0]+1),fill=color)
         start=time.time()
         self.path=shortest_path(self.source,self.target)
         end=time.time()
@@ -173,6 +173,7 @@ class Robot():
 
 
 def log(df):
+    global timem
     while(1):
      dict={}
      for i in df.index:
@@ -199,6 +200,7 @@ def log(df):
         if flag!=-1:
             df.loc[i,'decision']="M"
      for i in df.index:
+        start=time.time()
         if df.loc[i,'decision']=='M'and i.f==0:
             k=df.loc[i,'next']
             s=0
@@ -254,7 +256,7 @@ def log(df):
                 df.loc[i,'decision']="W"
                 break
             i.pos=i.pos+1
-            move_robot(i,df)
+            #move_robot(i,df)
             y=df.at[i,'next']
             df.at[i,'current']=y
             if i.pos<len(i.path):
@@ -264,16 +266,18 @@ def log(df):
                df.loc[i,'decision']="X"
                print("destination reached of ",i.id)
                df.drop(i,inplace=True)
-               canvas.delete(i.id)
+               #canvas.delete(i.id)
                print(df)
         elif df.loc[i,'decision']=='A':
              auction(dict,df)
         elif df.loc[i,'decision']=="X":
              df.drop(i,inplace=True)
-             canvas.delete(i.id)
-     canvas.update()
-     time.sleep(0.5)
-
+             #canvas.delete(i.id)
+     #canvas.update()
+     #time.sleep(0.5)
+     end=time.time()
+     diff=end-start
+     timem=timem+diff
      if df.empty:
          print('finished')
          break
@@ -297,7 +301,6 @@ def move_robot(x,df):
     timem=timem+diff
 
 def auction(dict,df):
-    #messagebox.showinfo("Title","Auction occured")
     maxi=0
     second_max=0
     kx=dict.keys()
@@ -378,49 +381,46 @@ def auction(dict,df):
                     for j in l:
                         if j!=x:
                            df.loc[j,'decision']="W"
-                    return
-    a=list(set(dict[i]))
-    bid=[]
-    for x in a:
-        if x.category=='regular':
-               x.bid=random.gauss(0.5,0.083)
-        elif x.category=='premium':
-               x.bid=random.gauss(0.75,0.083)
-        else:
-                x.bid=random.gauss(0.25,0.083)
-        bid.append(x.bid)
-    print(bid)
-    maxi=max(bid)
-    bid.remove(maxi)
-    second_max=max(bid)
-    for x in a:
-            
-            if x.bid==maxi:
-                max_index=x
-                print('highest:',maxi,x)
-                print('second highest:',second_max)
-                df.loc[x,'decision']='M'
-                x.f=1
-                print("the robot has id",x)
-                print("It's category is:",x.category)
-                print("it has paid ",second_max)
-             
-                x.pos=x.pos+1
-                move_robot(x,df)
-                y=df.at[x,'next']
-                df.at[x,'current']=y
-                if x.pos<len(x.path):
-                   df.at[x,'next']=x.path[x.pos]
-                elif x.pos>=len(x.path):
-                   df.loc[x,'decision']="X"
-                   print("destination reached of ",x.id)
+                    continue
+                a=list(set(dict[i]))
+                bid=[]
+                for x in a:
+                     if x.category=='regular':
+                        x.bid=random.gauss(0.5,0.083)
+                     elif x.category=='premium':
+                        x.bid=random.gauss(0.75,0.083)
+                     else:
+                         x.bid=random.gauss(0.25,0.083)
+                     bid.append(x.bid)
+                print(bid)
+                maxi=max(bid)
+                bid.remove(maxi)
+                second_max=max(bid)
+                for x in a:
+                 if x.bid==maxi:
+                  max_index=x
+                  print('highest:',maxi,x)
+                  print('second highest:',second_max)
+                  df.loc[x,'decision']='M'
+                  x.f=1
+                  print("the robot has id",x)
+                  print("It's category is:",x.category)
+                  print("it has paid ",second_max)
+                  x.pos=x.pos+1
+                  #move_robot(x,df)
+                  y=df.at[x,'next']
+                  df.at[x,'current']=y
+                  if x.pos<len(x.path):
+                    df.at[x,'next']=x.path[x.pos]
+                  elif x.pos>=len(x.path):
+                    df.loc[x,'decision']="X"
+                    print("destination reached of ",x.id)
                    #df.drop(x,inplace=True)
-
-            else:
-                df.loc[x,'decision']='W'
-                x.f=1
+                 else:
+                  df.loc[x,'decision']='W'
+                  x.f=1
 for s in num:
- d=10
+ d=100
  time_comp[s]=[]
  time_move[s]=[]
  category=['premium','regular','economy']
