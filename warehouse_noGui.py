@@ -1,16 +1,16 @@
 #from tkinter import *
-from tkinter import messagebox
+#from tkinter import messagebox
 import time
 import numpy as np
 import networkx as nx
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
-#from colors import color
+from colors import color
 from generate import r,c,num
 #from plots import tc,tm
 import sys
-sys.stdout = open('output.txt','wt')
+#sys.stdout = open('output.txt','wt')
 SIZE=50
 HEIGHT=r*SIZE
 WIDTH=c*SIZE
@@ -101,12 +101,12 @@ f.close()
 #draw_grid()
 
 
-"""for i in range(r):
-    for j in range(c):
-        if matrix[i][j]==-2:
-            set_exit_points(i,j)
-        if matrix[i][j]==-1:
-            set_obstacles(i,j)"""
+#for i in range(r):
+ #   for j in range(c):
+        #if matrix[i][j]==-2:
+            #set_exit_points(i,j)
+        #if matrix[i][j]==-1:
+            #set_obstacles(i,j)
 
 def shortest_path(source,target):
     G=nx.DiGraph()
@@ -199,8 +199,8 @@ def log(df):
 
         if flag!=-1:
             df.loc[i,'decision']="M"
-     start=time.time()
      for i in df.index:
+        start=time.time()
         if df.loc[i,'decision']=='M'and i.f==0:
             k=df.loc[i,'next']
             s=0
@@ -228,7 +228,7 @@ def log(df):
                             s=s+1
                         elif df.loc[j,'current']==r:
                             s=s+1
-            elif matrix[k[0]][k[1]]==9:
+            elif matrix[k[0]][k[1]]==10:
                 p=[k[0],k[1]-1]
                 q=[k[0]+1,k[1]]
                 r=[k[0]+1,k[1]-1]
@@ -240,7 +240,7 @@ def log(df):
                             s=s+1
                         elif df.loc[j,'current']==r:
                             s=s+1
-            elif matrix[k[0]][k[1]]==10:
+            elif matrix[k[0]][k[1]]==9:
                 p=[k[0],k[1]+1]
                 q=[k[0]+1,k[1]]
                 r=[k[0]+1,k[1]+1]
@@ -304,25 +304,101 @@ def auction(dict,df):
     #messagebox.showinfo("Title","Auction occured")
     maxi=0
     second_max=0
-    k=dict.keys()
-    for i in k:
-        a=list(set(dict[i]))
-        bid=[]
-        for x in a:
-            if x.category=='regular':
+    kx=dict.keys()
+    for i in kx:  
+                k=i
+                l=list(set(dict[i]))
+                s=0
+                if matrix[k[0]][k[1]]==5:
+                   p=[k[0],k[1]+1]
+                   q=[k[0]-1,k[1]]
+                   r=[k[0]-1,k[1]+1]
+                   for j in df.index:
+                            if df.loc[j,'current']==p:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==q:
+                                 if j in l:
+                                   x=j
+                                 s=s+1
+                            elif df.loc[j,'current']==r:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                elif matrix[k[0]][k[1]]==6:
+                    p=[k[0],k[1]-1]
+                    q=[k[0]-1,k[1]]
+                    r=[k[0]-1,k[1]-1]
+                    for j in df.index:
+                            if df.loc[j,'current']==p:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==q:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==r:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                elif matrix[k[0]][k[1]]==10:
+                    p=[k[0],k[1]-1]
+                    q=[k[0]+1,k[1]]
+                    r=[k[0]+1,k[1]-1]
+                    for j in df.index:
+                            if df.loc[j,'current']==p:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==q:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                            elif df.loc[j,'current']==r:
+                                if j in l:
+                                   x=j
+                                s=s+1
+                elif matrix[k[0]][k[1]]==9:
+                            p=[k[0],k[1]+1]
+                            q=[k[0]+1,k[1]]
+                            r=[k[0]+1,k[1]+1]
+                            for j in df.index:
+                                    if df.loc[j,'current']==p:
+                                        if j in l:
+                                           x=j
+                                        s=s+1
+                                    elif df.loc[j,'current']==q:
+                                        if j in l:
+                                           x=j
+                                        s=s+1
+                                    elif df.loc[j,'current']==r:
+                                        if j in l:
+                                           x=j
+                                        s=s+1
+                if s==3:
+                    df.loc[x,'decision']="M"
+                    for j in l:
+                        if j!=x:
+                           df.loc[j,'decision']="W"
+                    return
+    a=list(set(dict[i]))
+    bid=[]
+    for x in a:
+        if x.category=='regular':
                x.bid=random.gauss(0.5,0.083)
-            elif x.category=='premium':
+        elif x.category=='premium':
                x.bid=random.gauss(0.75,0.083)
-            else:
+        else:
                 x.bid=random.gauss(0.25,0.083)
-
-            bid.append(x.bid)
-        print(bid)
-        maxi=max(bid)
-        bid.remove(maxi)
-        second_max=max(bid)
-        auc={}
-        for x in a:
+        bid.append(x.bid)
+    print(bid)
+    maxi=max(bid)
+    bid.remove(maxi)
+    second_max=max(bid)
+    for x in a:
+            
             if x.bid==maxi:
                 max_index=x
                 print('highest:',maxi,x)
@@ -332,6 +408,7 @@ def auction(dict,df):
                 print("the robot has id",x)
                 print("It's category is:",x.category)
                 print("it has paid ",second_max)
+             
                 x.pos=x.pos+1
                 #move_robot(x,df)
                 y=df.at[x,'next']
@@ -346,20 +423,20 @@ def auction(dict,df):
             else:
                 df.loc[x,'decision']='W'
                 x.f=1
-
-d=3
-time_comp[num]=[]
-time_move[num]=[]
-category=['premium','regular','economy']
-while(d>0):
- robot=[]
- timec=0
- timem=0
- sample1=random.sample(valid,num)
- sample2=random.sample(valid,num)
- print("sample 1 ",sample1)
- print("sample 2 ",sample2)
- for i in range(0,num):
+for s in num:
+ d=10
+ time_comp[s]=[]
+ time_move[s]=[]
+ category=['premium','regular','economy']
+ while(d>0):
+  robot=[]
+  timec=0
+  timem=0
+  sample1=random.sample(valid,s)
+  sample2=random.sample(valid,s)
+  print("sample 1 ",sample1)
+  print("sample 2 ",sample2)
+  for i in range(0,s):
     a=sample1[i]
     u=sample2[i]
     v=random.choice(category)
@@ -369,10 +446,10 @@ while(d>0):
     r1=Robot(v,a,u)
     robot.append(r1)
     r1.create_robot(t)
- current=[]
- next=[]
- id=[]
- for x in robot:
+  current=[]
+  next=[]
+  id=[]
+  for x in robot:
     current.append(x.path[0])
     if len(x.path)>1:
        next.append(x.path[1])
@@ -380,35 +457,37 @@ while(d>0):
        x.pos=0
        next.append(x.path[0])
     id.append(x.id)
- data={'id':id,'current':current,'next':next}
- df=pd.DataFrame(data,columns=['id','current','next','decision'],index=robot)
- print(df)
- start=time.time()
- df=log(df)
- end=time.time()
- diff=end-start
- timec=timec+diff
- timec=timec-timem
- print("timec ",timec)
- print("timem ",timem)
- time_comp[num].append(timec)
- time_move[num].append(timem)
- d=d-1
-print(time_comp)
-print(time_move)
-f=open('plots1.txt','a')
-f.write("Second price auction\n")
-x=time_comp[num]
-y=time_move[num]
-x=np.array(x)
-y=np.array(y)
-#f.write("Grid size: %sX%s\n"%num %num)
-f.write("No. of robots: %d\n" %num)
-f.write("Computation time:\n")
+  data={'id':id,'current':current,'next':next}
+  df=pd.DataFrame(data,columns=['id','current','next','decision'],index=robot)
+  print(df)
+  start=time.time()
+  df=log(df)
+  end=time.time()
+  diff=end-start
+  timec=timec+diff
+  timec=timec-timem
+  print("timec ",timec)
+  print("timem ",timem)
+  time_comp[s].append(timec)
+  time_move[s].append(timem)
+  d=d-1
+ print(time_comp)
+ print(time_move)
+ f=open('plots1.txt','a')
+ f.write("Second price auction\n")
+ x=time_comp[s]
+ y=time_move[s]
+ x=np.array(x)
+ y=np.array(y)
+#f.write("Grid size: %dX%d"%num)
+ f.write("No. of robots: %d\n" %s)
+ f.write("Computation time:\n")
 #for i in x:
-f.write("%.15f\n"%np.mean(x))
-f.write("Movement time:\n")
+ f.write("%.15f\n"%np.mean(x))
+ f.write("%.15f\n"%np.std(x))
+ f.write("Movement time:\n")
 #for i in y:
-f.write("%.18f\n"%np.mean(y))
-f.close()
+ f.write("%.18f\n"%np.mean(y))
+ f.write("%.18f\n"%np.std(y))   
+ f.close()
  #root.mainloop()
