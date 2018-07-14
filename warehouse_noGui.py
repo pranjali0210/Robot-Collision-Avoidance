@@ -361,21 +361,22 @@ def auction(dict,df):
                    #df.drop(x,inplace=True)
                 else:
                   df.loc[x,'decision']='W'
-#def second_price(sample1,sample2):                  x.f=1
-for s in num:
- d=1
- time_comp[s]=[]
- time_move[s]=[]
- category=['premium','regular','economy']
- while(d>0):
+                  x.f=1
+def second_price(sample1,sample2,s):
+#for s in num:
+ #d=1
+  #time_comp[s]=[]
+  #time_move[s]=[]
+  category=['premium','regular','economy']
+ #while(d>0):
   robot=[]
   timec=0
   timem=0
-  count=0
-  sample1=random.sample(valid,s)
-  sample2=random.sample(valid,s)
-  print("sample 1 ",sample1)
-  print("sample 2 ",sample2)
+  #count=0
+  #sample1=random.sample(valid,s)
+  #sample2=random.sample(valid,s)
+  #print("sample 1 ",sample1)
+  #print("sample 2 ",sample2)
   for i in range(0,s):
     a=sample1[i]
     u=sample2[i]
@@ -407,13 +408,13 @@ for s in num:
   timec=timec+diff
   timec=timec-timem
   print("timec ",timec)
-  #print("timem ",timem)
-  time_comp[s].append(timec)
-  time_move[s].append(count)
-  d=d-1
- print(time_comp)
- print(time_move)
- f=open('plots1.txt','a')
+  #time_comp[s].append(timec)
+  #time_move[s].append(count)
+  #d=d-1
+  print(timec)
+  print(count)
+  return timec,count
+  """f=open('plots1.txt','a')
  f.write("Second price auction\n")
  x=time_comp[s]
  y=time_move[s]
@@ -427,4 +428,4 @@ for s in num:
  f.write("Movement time:\n")
  f.write("%d\n"%np.mean(y))
  #f.write("%\n"%np.std(y))
- f.close()
+ f.close()"""
