@@ -1,5 +1,3 @@
-from tkinter import *
-from tkinter import messagebox
 import time
 import numpy as np
 import networkx as nx
@@ -8,7 +6,6 @@ import random
 import matplotlib.pyplot as plt
 from colors import color
 from generate import r,c,num
-#from plots import tc,tm
 import sys
 #sys.stdout = open('output.txt','wt')
 SIZE=50
@@ -21,26 +18,7 @@ timec=0
 timem=0
 time_comp={}
 time_move={}
-pos=1
-root = Tk()
-canvas = Canvas(root, bg="AntiqueWhite1", height=HEIGHT, width=WIDTH)
-root.title("Decentralized Robot Collision Avoidance")
-canvas.pack()
-
-
-def draw_grid():
-    row=[]
-    column=[]
-    for i in range(r+1):
-           x=canvas.create_line(0,SIZE*i,WIDTH,SIZE*i,tag='row')
-    for i in range(c+1):
-           y=canvas.create_line(SIZE*i,0,SIZE*i,HEIGHT,tag='column')
-
-def set_exit_points(i,j):
-        x=canvas.create_rectangle(SIZE*j,SIZE*i,SIZE*(j+1),SIZE*(i+1),fill='red2')
-
-def set_obstacles(x,y):
-    a=canvas.create_rectangle(SIZE*(y),SIZE*(x),SIZE*(y+1),SIZE*(x+1),fill='brown4')
+count=0
 
 matrix=[[0]*c for i in range(r)]
 f=open('route.txt','r')
@@ -98,15 +76,6 @@ while(1):
 
 f.close()
 
-draw_grid()
-
-
-for i in range(r):
-    for j in range(c):
-        if matrix[i][j]==-2:
-            set_exit_points(i,j)
-        if matrix[i][j]==-1:
-            set_obstacles(i,j)
 
 def shortest_path(source,target):
     G=nx.DiGraph()
@@ -162,7 +131,6 @@ class Robot():
 
     def create_robot(self,color):
         global timec
-        self.id=canvas.create_rectangle(SIZE*(self.source[1]),SIZE*(self.source[0]),SIZE*(self.source[1]+1),SIZE*(self.source[0]+1),fill=color)
         start=time.time()
         self.path=shortest_path(self.source,self.target)
         end=time.time()
@@ -171,23 +139,23 @@ class Robot():
         self.color=color
 
 
-
 def log(df):
     global timem
+    global count
     while(1):
+     count=count+1
      dict={}
      for i in df.index:
         flag=0
         i.f=0
         for j in df.index:
-            if j!=i and df.loc[i,'decision']!='X':
+           if j!=i and df.loc[i,'decision']!='X':
               if df.loc[i,'next']==df.loc[j,'current']:
                  df.loc[i,'decision']='W'
                  flag=-1
                  break
               elif df.loc[i,'next']==df.loc[j,'next']:
                    x=df.loc[i,'next']
-                   #messagebox.showinfo("Title","Auction")
                    x=tuple(x)
                    if x not in dict:
                        dict[x]=[]
@@ -195,8 +163,6 @@ def log(df):
                    dict[x].append(j)
                    df.loc[i,'decision']='A'
                    flag=-1
-                   #break
-
         if flag!=-1:
             df.loc[i,'decision']="M"
      for i in df.index:
@@ -210,11 +176,11 @@ def log(df):
                 r=[k[0]-1,k[1]+1]
                 for j in df.index:
                     if j!=i:
-                        if df.loc[j,'current']==p:
+                       if df.loc[j,'current']==p:
+                           s=s+1
+                       elif df.loc[j,'current']==q:
                             s=s+1
-                        elif df.loc[j,'current']==q:
-                            s=s+1
-                        elif df.loc[j,'current']==r:
+                       elif df.loc[j,'current']==r:
                             s=s+1
             elif matrix[k[0]][k[1]]==6:
                 p=[k[0],k[1]-1]
@@ -254,9 +220,8 @@ def log(df):
                             s=s+1
             if s==3:
                 df.loc[i,'decision']="W"
-                break
+                continue
             i.pos=i.pos+1
-            move_robot(i,df)
             y=df.at[i,'next']
             df.at[i,'current']=y
             if i.pos<len(i.path):
@@ -266,15 +231,11 @@ def log(df):
                df.loc[i,'decision']="X"
                print("destination reached of ",i.id)
                df.drop(i,inplace=True)
-               canvas.delete(i.id)
                print(df)
         elif df.loc[i,'decision']=='A':
              auction(dict,df)
         elif df.loc[i,'decision']=="X":
              df.drop(i,inplace=True)
-             canvas.delete(i.id)
-     canvas.update()
-     time.sleep(0.5)
      end=time.time()
      diff=end-start
      timem=timem+diff
@@ -282,145 +243,127 @@ def log(df):
          print('finished')
          break
 
-def move_robot(x,df):
-    global timem
-    current=df.loc[x,'current']
-    next=df.loc[x,'next']
-    print(current,next)
-    start=time.time()
-    if next[0]-current[0]==1:
-        canvas.move(x.id,0,SIZE)
-    elif next[0]-current[0]==-1:
-        canvas.move(x.id,0,-SIZE)
-    elif next[1]-current[1]==1:
-        canvas.move(x.id,SIZE,0)
-    elif next[1]-current[1]==-1:
-        canvas.move(x.id,-SIZE,0)
-    end=time.time()
-    diff=end-start
-    timem=timem+diff
-
 def auction(dict,df):
     maxi=0
     second_max=0
     kx=dict.keys()
-    for i in kx:  
-                k=i
-                l=list(set(dict[i]))
-                s=0
-                if matrix[k[0]][k[1]]==5:
-                   p=[k[0],k[1]+1]
-                   q=[k[0]-1,k[1]]
-                   r=[k[0]-1,k[1]+1]
-                   for j in df.index:
-                            if df.loc[j,'current']==p:
-                                if j in l:
-                                   x=j
-                                s=s+1
-                            elif df.loc[j,'current']==q:
-                                 if j in l:
-                                   x=j
-                                 s=s+1
-                            elif df.loc[j,'current']==r:
-                                if j in l:
-                                   x=j
-                                s=s+1
-                elif matrix[k[0]][k[1]]==6:
-                    p=[k[0],k[1]-1]
-                    q=[k[0]-1,k[1]]
-                    r=[k[0]-1,k[1]-1]
-                    for j in df.index:
-                            if df.loc[j,'current']==p:
-                                if j in l:
-                                   x=j
-                                s=s+1
-                            elif df.loc[j,'current']==q:
-                                if j in l:
-                                   x=j
-                                s=s+1
-                            elif df.loc[j,'current']==r:
-                                if j in l:
-                                   x=j
-                                s=s+1
-                elif matrix[k[0]][k[1]]==10:
-                    p=[k[0],k[1]-1]
-                    q=[k[0]+1,k[1]]
-                    r=[k[0]+1,k[1]-1]
-                    for j in df.index:
-                            if df.loc[j,'current']==p:
-                                if j in l:
-                                   x=j
-                                s=s+1
-                            elif df.loc[j,'current']==q:
-                                if j in l:
-                                   x=j
-                                s=s+1
-                            elif df.loc[j,'current']==r:
-                                if j in l:
-                                   x=j
-                                s=s+1
-                elif matrix[k[0]][k[1]]==9:
-                            p=[k[0],k[1]+1]
-                            q=[k[0]+1,k[1]]
-                            r=[k[0]+1,k[1]+1]
-                            for j in df.index:
-                                    if df.loc[j,'current']==p:
-                                        if j in l:
-                                           x=j
-                                        s=s+1
-                                    elif df.loc[j,'current']==q:
-                                        if j in l:
-                                           x=j
-                                        s=s+1
-                                    elif df.loc[j,'current']==r:
-                                        if j in l:
-                                           x=j
-                                        s=s+1
-                if s==3:
-                    df.loc[x,'decision']="M"
-                    for j in l:
-                        if j!=x:
-                           df.loc[j,'decision']="W"
+    for i in kx:
+        k=i
+        l=list(set(dict[i]))
+        s=0
+        if matrix[k[0]][k[1]]==5:
+            p=[k[0],k[1]+1]
+            q=[k[0]-1,k[1]]
+            r=[k[0]-1,k[1]+1]
+            for j in df.index:
+                if df.loc[j,'current']==p:
+                    if j in l:
+                        x=j
+                    s=s+1
+                elif df.loc[j,'current']==q:
+                    if j in l:
+                        x=j
+                    s=s+1
+                elif df.loc[j,'current']==r:
+                    if j in l:
+                        x=j
+                    s=s+1
+        elif matrix[k[0]][k[1]]==6:
+              p=[k[0],k[1]-1]
+              q=[k[0]-1,k[1]]
+              r=[k[0]-1,k[1]-1]
+              for j in df.index:
+                  if df.loc[j,'current']==p:
+                     if j in l:
+                        x=j
+                     s=s+1
+                  elif df.loc[j,'current']==q:
+                        if j in l:
+                            x=j
+                        s=s+1
+                  elif df.loc[j,'current']==r:
+                        if j in l:
+                            x=j
+                        s=s+1
+        elif matrix[k[0]][k[1]]==10:
+             p=[k[0],k[1]-1]
+             q=[k[0]+1,k[1]]
+             r=[k[0]+1,k[1]-1]
+             for j in df.index:
+                if df.loc[j,'current']==p:
+                    if j in l:
+                        x=j
+                    s=s+1
+                elif df.loc[j,'current']==q:
+                     if j in l:
+                        x=j
+                     s=s+1
+                elif df.loc[j,'current']==r:
+                     if j in l:
+                        x=j
+                     s=s+1
+        elif matrix[k[0]][k[1]]==9:
+             p=[k[0],k[1]+1]
+             q=[k[0]+1,k[1]]
+             r=[k[0]+1,k[1]+1]
+             for j in df.index:
+                if df.loc[j,'current']==p:
+                    if j in l:
+                        x=j
+                    s=s+1
+                elif df.loc[j,'current']==q:
+                    if j in l:
+                        x=j
+                    s=s+1
+                elif df.loc[j,'current']==r:
+                    if j in l:
+                        x=j
+                    s=s+1
+        if s==3:
+            df.loc[x,'decision']="M"
+            for j in l:
+                if j!=x:
+                    df.loc[j,'decision']="W"
                     continue
-                a=list(set(dict[i]))
-                bid=[]
-                for x in a:
-                     if x.category=='regular':
-                        x.bid=random.gauss(0.5,0.083)
-                     elif x.category=='premium':
-                        x.bid=random.gauss(0.75,0.083)
-                     else:
-                         x.bid=random.gauss(0.25,0.083)
-                     bid.append(x.bid)
-                print(bid)
-                maxi=max(bid)
-                bid.remove(maxi)
-                second_max=max(bid)
-                for x in a:
-                 if x.bid==maxi:
-                  max_index=x
-                  print('highest:',maxi,x)
-                  print('second highest:',second_max)
-                  df.loc[x,'decision']='M'
-                  x.f=1
-                  print("the robot has id",x)
-                  print("It's category is:",x.category)
-                  print("it has paid ",second_max)
-                  x.pos=x.pos+1
-                  move_robot(x,df)
-                  y=df.at[x,'next']
-                  df.at[x,'current']=y
-                  if x.pos<len(x.path):
+        a=list(set(dict[i]))
+        print("auction: ",a)
+        bid=[]
+        for x in a:
+            if x.category=='regular':
+                x.bid=random.gauss(0.5,0.083)
+            elif x.category=='premium':
+                x.bid=random.gauss(0.75,0.083)
+            else:
+                x.bid=random.gauss(0.25,0.083)
+            bid.append(x.bid)
+        print(bid)
+        maxi=max(bid)
+        bid.remove(maxi)
+        second_max=max(bid)
+        for x in a:
+            if x.bid==maxi:
+                max_index=x
+                print('highest:',maxi,x)
+                print('second highest:',second_max)
+                df.loc[x,'decision']='M'
+                x.f=1
+                #print("the robot has id",x)
+                print("It's category is:",x.category)
+                print("it has paid ",second_max)
+                x.pos=x.pos+1
+                y=df.at[x,'next']
+                df.at[x,'current']=y
+                if x.pos<len(x.path):
                     df.at[x,'next']=x.path[x.pos]
-                  elif x.pos>=len(x.path):
+                elif x.pos>=len(x.path):
                     df.loc[x,'decision']="X"
                     print("destination reached of ",x.id)
                    #df.drop(x,inplace=True)
-                 else:
+                else:
                   df.loc[x,'decision']='W'
-                  x.f=1
+#def second_price(sample1,sample2):                  x.f=1
 for s in num:
- d=100
+ d=1
  time_comp[s]=[]
  time_move[s]=[]
  category=['premium','regular','economy']
@@ -428,6 +371,7 @@ for s in num:
   robot=[]
   timec=0
   timem=0
+  count=0
   sample1=random.sample(valid,s)
   sample2=random.sample(valid,s)
   print("sample 1 ",sample1)
@@ -463,9 +407,9 @@ for s in num:
   timec=timec+diff
   timec=timec-timem
   print("timec ",timec)
-  print("timem ",timem)
+  #print("timem ",timem)
   time_comp[s].append(timec)
-  time_move[s].append(timem)
+  time_move[s].append(count)
   d=d-1
  print(time_comp)
  print(time_move)
@@ -475,15 +419,12 @@ for s in num:
  y=time_move[s]
  x=np.array(x)
  y=np.array(y)
-#f.write("Grid size: %dX%d"%num)
+ #f.write("Grid size: %dX%d"%num)
  f.write("No. of robots: %d\n" %s)
  f.write("Computation time:\n")
-#for i in x:
  f.write("%.15f\n"%np.mean(x))
  f.write("%.15f\n"%np.std(x))
  f.write("Movement time:\n")
-#for i in y:
- f.write("%.18f\n"%np.mean(y))
- f.write("%.18f\n"%np.std(y))   
+ f.write("%d\n"%np.mean(y))
+ #f.write("%\n"%np.std(y))
  f.close()
- #root.mainloop()
