@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from generate import r,c,num,m,n
 from colors import color
 import sys
-sys.stdout = open('output.txt','wt')
+#sys.stdout = open('output.txt','wt')
 SIZE=50
 HEIGHT=r*SIZE
 WIDTH=c*SIZE
@@ -218,17 +218,16 @@ def plan(df):
           print('finished')
           break
 
-for s in num:
- d=1
- time_comp[s]=[]
- time_move[s]=[]
- while(d>0):
+def pp(sample1,sample2,s):
+#for s in num:
+ #d=1
+ #while(d>0):
   robot=[]
   timec=0
   timem=0
-  count=0
-  sample1=random.sample(valid,s)
-  sample2=random.sample(valid,s)
+  #count=0
+  #sample1=random.sample(valid,s)
+  #sample2=random.sample(valid,s)
   for i in range(0,s):
    a=sample1[i]
    u=sample2[i]
@@ -266,11 +265,12 @@ for s in num:
   timec=timec-timem
   print("Timec ",timec)
   print("Timem ",count)
-  time_comp[s].append(timec)
-  time_move[s].append(count)
-  print("One iteration")
-  d=d-1
- f=open('plots2.txt','a')
+  #time_comp[s].append(timec)
+  #time_move[s].append(count)
+  #print("One iteration")
+  #d=d-1
+  return timec,count
+  """f=open('plots2.txt','a')
  f.write("Prioritised planning\n")
  x=time_comp[s]
  y=time_move[s]
@@ -282,5 +282,5 @@ for s in num:
  f.write("%.15f\n"%np.mean(x))
  f.write("Movement time:\n")
  f.write("%d\n"%np.mean(y))
- f.close()
+ f.close()"""
 #root.mainloop()
