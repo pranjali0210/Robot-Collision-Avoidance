@@ -113,7 +113,7 @@ def shortest_path(source,target):
        path[i].append(y)
        i=i+1
     nx.draw(G)
-    print(path)
+    #print(path)
     #plt.show()
     return path
 
@@ -130,7 +130,7 @@ class Robot():
         self.f=0
 
     def create_robot(self,color,timec):
-        global timec
+        #global timec
         start=time.time()
         self.path=shortest_path(self.source,self.target)
         end=time.time()
@@ -140,8 +140,8 @@ class Robot():
         return timec
 
 
-def log(df,timem):
-    global count
+def log(df,timem,count):
+    #global count
     while(1):
      count=count+1
      dict={}
@@ -242,7 +242,7 @@ def log(df,timem):
      if df.empty:
          print('finished')
          break
-    return timem
+    return df,timem,count
 
 def auction(dict,df):
     maxi=0
@@ -368,6 +368,7 @@ def second_price(sample1,sample2,s):
   robot=[]
   timec=0
   timem=0
+  count=0
   for i in range(0,s):
     a=sample1[i]
     u=sample2[i]
@@ -391,7 +392,7 @@ def second_price(sample1,sample2,s):
   df=pd.DataFrame(data,columns=['id','current','next','decision'],index=robot)
   print(df)
   start=time.time()
-  df,timem=log(df)
+  df,timem,count=log(df,timem,count)
   end=time.time()
   diff=end-start
   timec=timec+diff
