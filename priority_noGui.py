@@ -140,7 +140,7 @@ class Robot():
         end=time.time()
         diff=end-start
         timec=timec+diff
-        print("time in robot: ",timec)
+        #print("time in robot: ",timec)
         self.color=color
         self.priority=len(self.path)*0.04
         return timec
@@ -183,8 +183,8 @@ def log(df):
             for x in path:
                 i.path.append(x)
      print("time in log: ",timec)
-def plan(df,timem):
-    global count
+def plan(df,timem,count):
+    #global count
     #global timem
     while(1):
         count=count+1
@@ -215,14 +215,15 @@ def plan(df,timem):
         if df.empty:
           print('finished')
           break
-    print("count in plan function:",timem)
-    print("time in plan function:",timec)
-    return df,timem
+    #print("count in plan function:",timem)
+    #print("time in plan function:",timec)
+    return df,timem,count
 
 def pp(sample1,sample2,s):
   robot=[]
   timec=0
   timem=0
+  count=0
   for i in range(0,s):
    a=sample1[i]
    u=sample2[i]
@@ -252,7 +253,7 @@ def pp(sample1,sample2,s):
   df.sort_values('priority',ascending=False,inplace=True,axis=0)
   print(df)
   start=time.time()
-  df,timem=plan(df,timem)
+  df,timem,count=plan(df,timem,count)
   end=time.time()
   diff=end-start
   timec=timec+diff
