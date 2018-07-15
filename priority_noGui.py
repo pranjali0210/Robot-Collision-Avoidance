@@ -132,17 +132,18 @@ class Robot():
         self.id=0
         self.bid=0
 
-    def create_robot(self,color):
-        global timec
+    def create_robot(self,color,timec):
+        #global timec
         #self.id=canvas.create_rectangle(SIZE*(self.source[1]),SIZE*(self.source[0]),SIZE*(self.source[1]+1),SIZE*(self.source[0]+1),fill=color)
         start=time.time()
         self.path=shortest_path(matrix,self.source,self.target)
         end=time.time()
         diff=end-start
         timec=timec+diff
+        print("time in robot: ",timec)
         self.color=color
         self.priority=len(self.path)*0.04
-
+        return timec
 
 
 def log(df):
@@ -181,13 +182,13 @@ def log(df):
             i.path=i.path[0:i.path.index(current)]
             for x in path:
                 i.path.append(x)
-        print(i.priority,i.path)
-def plan(df):
+     print("time in log: ",timec)
+def plan(df,timem):
     global count
+    #global timem
     while(1):
         count=count+1
         log(df)
-        global timem
         start=time.time()
         for i in df.index:
             y=df.loc[i,'current']
@@ -205,11 +206,8 @@ def plan(df):
             else:
                 df.at[i,'current']=i.path[z+1]
                 df.at[i,'next']=i.path[n]
-            print("pos: ",i.priority,z)
+            #print("pos: ",i.priority,z)
         print(df)
-        #for i in df.index:
-          #if df.loc[i,'decision']=="X":
-            #  count=count+1
         end=time.time()
         diff=end-start
         timem=timem+diff
@@ -217,30 +215,25 @@ def plan(df):
         if df.empty:
           print('finished')
           break
+    print("count in plan function:",timem)
+    print("time in plan function:",timec)
+    return df,timem
 
 def pp(sample1,sample2,s):
-#for s in num:
- #d=1
- #while(d>0):
   robot=[]
   timec=0
   timem=0
-  #count=0
-  #sample1=random.sample(valid,s)
-  #sample2=random.sample(valid,s)
   for i in range(0,s):
    a=sample1[i]
    u=sample2[i]
    if a==u:
        i=i-1
        continue
-   #v=random.choice(category)
    t=random.choice(color)
-   print("source:",a)
-   print("destination:",u)
    r1=Robot(a,u)
    robot.append(r1)
-   r1.create_robot(t)
+   timec=r1.create_robot(t,timec)
+  print("after path calculation: ",timec)
   current=[]
   next=[]
   id=[]
@@ -259,16 +252,13 @@ def pp(sample1,sample2,s):
   df.sort_values('priority',ascending=False,inplace=True,axis=0)
   print(df)
   start=time.time()
-  df=plan(df)
+  df,timem=plan(df,timem)
   end=time.time()
-  timec=end-start
+  diff=end-start
+  timec=timec+diff
   timec=timec-timem
   print("Timec ",timec)
   print("Timem ",count)
-  #time_comp[s].append(timec)
-  #time_move[s].append(count)
-  #print("One iteration")
-  #d=d-1
   return timec,count
   """f=open('plots2.txt','a')
  f.write("Prioritised planning\n")
