@@ -74,7 +74,7 @@ for x in range(1,r-1):
       arr[x][0]='U'
   else:
     arr[x][0]='B'
-path='/home/pranjali/miniconda3/envs/gt/route.txt'
+path='route.txt'
 file=open(path,'w')
 for i in range(r):
   for j in range(c):
