@@ -129,7 +129,7 @@ class Robot():
         self.bid=0
         self.f=0
 
-    def create_robot(self,color):
+    def create_robot(self,color,timec):
         global timec
         start=time.time()
         self.path=shortest_path(self.source,self.target)
@@ -137,10 +137,10 @@ class Robot():
         diff=end-start
         timec=timec+diff
         self.color=color
+        return timec
 
 
-def log(df):
-    global timem
+def log(df,timem):
     global count
     while(1):
      count=count+1
@@ -242,6 +242,7 @@ def log(df):
      if df.empty:
          print('finished')
          break
+    return timem
 
 def auction(dict,df):
     maxi=0
@@ -343,13 +344,13 @@ def auction(dict,df):
         for x in a:
             if x.bid==maxi:
                 max_index=x
-                print('highest:',maxi,x)
-                print('second highest:',second_max)
+                #print('highest:',maxi,x)
+                #print('second highest:',second_max)
                 df.loc[x,'decision']='M'
                 x.f=1
                 #print("the robot has id",x)
-                print("It's category is:",x.category)
-                print("it has paid ",second_max)
+                #print("It's category is:",x.category)
+                #print("it has paid ",second_max)
                 x.pos=x.pos+1
                 y=df.at[x,'next']
                 df.at[x,'current']=y
@@ -363,30 +364,18 @@ def auction(dict,df):
                   df.loc[x,'decision']='W'
                   x.f=1
 def second_price(sample1,sample2,s):
-#for s in num:
- #d=1
-  #time_comp[s]=[]
-  #time_move[s]=[]
   category=['premium','regular','economy']
- #while(d>0):
   robot=[]
   timec=0
   timem=0
-  #count=0
-  #sample1=random.sample(valid,s)
-  #sample2=random.sample(valid,s)
-  #print("sample 1 ",sample1)
-  #print("sample 2 ",sample2)
   for i in range(0,s):
     a=sample1[i]
     u=sample2[i]
     v=random.choice(category)
     t=random.choice(color)
-    print("source:",a)
-    print("destination:",u)
     r1=Robot(v,a,u)
     robot.append(r1)
-    r1.create_robot(t)
+    timec=r1.create_robot(t,timec)
   current=[]
   next=[]
   id=[]
@@ -402,15 +391,12 @@ def second_price(sample1,sample2,s):
   df=pd.DataFrame(data,columns=['id','current','next','decision'],index=robot)
   print(df)
   start=time.time()
-  df=log(df)
+  df,timem=log(df)
   end=time.time()
   diff=end-start
   timec=timec+diff
   timec=timec-timem
   print("timec ",timec)
-  #time_comp[s].append(timec)
-  #time_move[s].append(count)
-  #d=d-1
   print(timec)
   print(count)
   return timec,count
